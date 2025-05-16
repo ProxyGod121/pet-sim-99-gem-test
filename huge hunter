@@ -1,4 +1,45 @@
 -- Services
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextButton = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+
+-- Properties
+ScreenGui.Parent = game:GetService("CoreGui")
+Frame.Size = UDim2.new(0, 200, 0, 50)
+Frame.Position = UDim2.new(0, 100, 0, 100)
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.Parent = ScreenGui
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = Frame
+
+TextButton.Size = UDim2.new(1, 0, 1, 0)
+TextButton.Position = UDim2.new(0, 0, 0, 0)
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 128, 0)
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.Text = "Turn On"
+TextButton.Font = Enum.Font.SourceSans
+TextButton.TextSize = 24
+TextButton.Parent = Frame
+
+-- Variables
+local isActive = false
+
+-- Function to toggle the script
+local function toggleScript()
+    isActive = not isActive
+    TextButton.Text = isActive and "Turn Off" or "Turn On"
+    if isActive then
+        activateScript()
+    else
+        deactivateScript()
+    end
+end
+
+TextButton.MouseButton1Click:Connect(toggleScript)
+
+-- Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -6,22 +47,33 @@ local player = Players.LocalPlayer
 -- Remote Events
 local purchaseEvent = ReplicatedStorage:WaitForChild("Eggs_RequestPurchase")
 
+-- Variables
+local isScriptActive = false
+
 -- Function to purchase an egg with a custom chance for a huge pet
 local function purchaseEggWithChance(chance)
-    purchaseEvent:FireServer()
-    local success = math.random() <= chance
-    if success then
-        print("Hatched a Huge Pet!")
-        -- You can add additional logic here to handle the huge pet hatch
-    else
-        print("Hatched a regular pet.")
+    if isScriptActive then
+        purchaseEvent:FireServer()
+        local success = math.random() <= chance
+        if success then
+            print("Hatched a Huge Pet!")
+            -- You can add additional logic here to handle the huge pet hatch
+        else
+            print("Hatched a regular pet.")
+        end
     end
 end
 
--- Main loop to continuously purchase eggs
-while true do
-    -- Wait for a short duration to avoid spamming the server
-    wait(1)
-    -- Call the function with a 1 in 20 chance
-    purchaseEggWithChance(1/20)
+-- Function to activate the script
+local function activateScript()
+    isScriptActive = true
+    while isScriptActive do
+        purchaseEggWithChance(1/20)
+        wait(1) -- Adjust the wait time as needed
+    end
+end
+
+-- Function to deactivate the script
+local function deactivateScript()
+    isScriptActive = false
 end
