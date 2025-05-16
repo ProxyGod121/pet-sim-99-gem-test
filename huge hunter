@@ -3,8 +3,11 @@ local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local TextButton = Instance.new("TextButton")
 local UICorner = Instance.new("UICorner")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
--- Properties
+-- GUI Properties
 ScreenGui.Parent = game:GetService("CoreGui")
 Frame.Size = UDim2.new(0, 200, 0, 50)
 Frame.Position = UDim2.new(0, 100, 0, 100)
@@ -24,13 +27,13 @@ TextButton.TextSize = 24
 TextButton.Parent = Frame
 
 -- Variables
-local isActive = false
+local isScriptActive = false
 
 -- Function to toggle the script
 local function toggleScript()
-    isActive = not isActive
-    TextButton.Text = isActive and "Turn Off" or "Turn On"
-    if isActive then
+    isScriptActive = not isScriptActive
+    TextButton.Text = isScriptActive and "Turn Off" or "Turn On"
+    if isScriptActive then
         activateScript()
     else
         deactivateScript()
@@ -39,16 +42,8 @@ end
 
 TextButton.MouseButton1Click:Connect(toggleScript)
 
--- Services
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
 -- Remote Events
 local purchaseEvent = ReplicatedStorage:WaitForChild("Eggs_RequestPurchase")
-
--- Variables
-local isScriptActive = false
 
 -- Function to purchase an egg with a custom chance for a huge pet
 local function purchaseEggWithChance(chance)
@@ -77,3 +72,10 @@ end
 local function deactivateScript()
     isScriptActive = false
 end
+
+-- Connect the purchase event to the custom function
+purchaseEvent.OnClientEvent:Connect(function()
+    if isScriptActive then
+        purchaseEggWithChance(1/20)
+    end
+end)
