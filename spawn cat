@@ -1,0 +1,11 @@
+-- Connect to the appropriate RemoteEvent
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local spawnPetEvent = ReplicatedStorage:WaitForChild("SpawnPetEvent")
+
+-- Function to spawn a pet
+local function spawnPet(petName)
+    spawnPetEvent:FireServer(petName)
+end
+
+-- Spawn a Titanic Cat
+spawnPet("Titanic Cat")
