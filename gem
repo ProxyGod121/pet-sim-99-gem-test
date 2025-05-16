@@ -1,0 +1,12 @@
+-- Connect to the appropriate RemoteEvent
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local increaseGemsEvent = ReplicatedStorage:WaitForChild("IncreaseGemsEvent")
+
+-- Function to increase gems
+local function increaseGems(amount)
+    increaseGemsEvent:FireServer(amount)
+end
+
+-- Increase gems by 1 billion
+increaseGems(1000000000)
+
