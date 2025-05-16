@@ -1,0 +1,27 @@
+-- Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Remote Events
+local purchaseEvent = ReplicatedStorage:WaitForChild("Eggs_RequestPurchase")
+
+-- Function to purchase an egg with a custom chance for a huge pet
+local function purchaseEggWithChance(chance)
+    purchaseEvent:FireServer()
+    local success = math.random() <= chance
+    if success then
+        print("Hatched a Huge Pet!")
+        -- You can add additional logic here to handle the huge pet hatch
+    else
+        print("Hatched a regular pet.")
+    end
+end
+
+-- Main loop to continuously purchase eggs
+while true do
+    -- Wait for a short duration to avoid spamming the server
+    wait(1)
+    -- Call the function with a 1 in 20 chance
+    purchaseEggWithChance(1/20)
+end
